@@ -107,7 +107,7 @@
 
     var stimuli = [];
 
-    //the hex codes of all colors we are using
+    //the gifs we are we are using
     for (i = 0; i < imgMotion.length; i++){
         stimuli.push(
             {item: imgMotion[i]},
@@ -410,8 +410,8 @@ var trial = {
             // Set the prompt to display the two choice images with space between them
             trial.prompt = `
       <div style="display: flex; justify-content: space-around; margin-top: 20px;">
-        <img src="${arr_pair[0]}" style="width: 150px; height: 150px; margin-right: 50px;" />
-        <img src="${arr_pair[1]}" style="width: 150px; height: 150px; margin-left: 50px;" />
+        <img src="${arr_pair[0]}" style="width: 150px; height: 150px; margin-right: 50px;" id="choice-left" />
+        <img src="${arr_pair[1]}" style="width: 150px; height: 150px; margin-left: 50px;" id="choice-right" />
       </div>`;
         },
 
@@ -483,8 +483,8 @@ var trial = {
             // Set the prompt to display the two choice images with space between them
             trial.prompt = `
       <div style="display: flex; justify-content: space-around; margin-top: 20px;">
-        <img src="${arr_pair[0]}" style="width: 150px; height: 150px; margin-right: 50px;" />
-        <img src="${arr_pair[1]}" style="width: 150px; height: 150px; margin-left: 50px;" />
+        <img src="${arr_pair[0]}" style="width: 150px; height: 150px; margin-right: 50px;" id="choice-left" />
+        <img src="${arr_pair[1]}" style="width: 150px; height: 150px; margin-left: 50px;" id="choice-right" />
       </div>`;
         },
 
