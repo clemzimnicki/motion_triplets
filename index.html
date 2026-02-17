@@ -277,72 +277,6 @@
       
       var arr_pair = [];
 
-/*
-
-    // define the trials!
-    var trial = {
-        type: jsPsychImageKeyboardResponse,
-        stimulus: jsPsych.timelineVariable('item'),
-        choices: ['ArrowLeft', 'ArrowRight'],
-        stimulus_height: 150,  // ADD THIS - matches your choice images
-        stimulus_width: 150,   // ADD THIS - matches your choice images
-        on_start: function (trial) {
-            shuffle(stimuli_arr);
-            arr_pair = getRandomItems(stimuli_arr);
-            // the following makes sure the choices and stimulus are NOT the same!
-            while (
-                arr_pair[0] == jsPsych.timelineVariable('item') ||
-                arr_pair[1] == jsPsych.timelineVariable('item')
-            ) {
-                arr_pair = getRandomItems(stimuli_arr);
-            }
-            console.log("Choices:", arr_pair);
-            trial.prompt = `
-        <div style="display: flex; justify-content: space-around; margin-top: 20px;">
-          <img src="${arr_pair[0]}" style="width: 150px; height: 150px; margin-right: 50px;" />
-          <img src="${arr_pair[1]}" style="width: 150px; height: 150px; margin-left: 50px;" />
-        </div>
-      </div>`;
-
-            // Store arr_pair in trial data
-            trial.data = {
-                choices: [arr_pair[0], arr_pair[1]]
-            };
-        },
-        on_finish: function (data) {
-            console.log("Response (key press):", data.response);
-
-            // Retrieve arr_pair from trial data
-            const choices = jsPsych.data.get().last(1).select('choices').values[0];
-            console.log("Retrieved Choices:", choices);
-
-            
-            if (data.response == 'ArrowLeft') {
-                console.log("ArrowLeft selected.");
-                data.selected_image = arr_pair[0];
-                data.selected_index = 0;  // ArrowLeft corresponds to the first choice
-            } else if (data.response == 'ArrowRight') {
-                console.log("ArrowRight selected.");
-                data.selected_image = arr_pair[1];
-                data.selected_index = 1;  // ArrowLeft corresponds to the first choice
-            }
-
-            // Get the previous trial's data and compute the average response time
-            var data_last1 = jsPsych.data.get().last(1);
-            var lasttrialdata_rt = data_last1.select("rt").mean();
-
-            // Check if the response was "speedy"
-            data.speedy = lasttrialdata_rt < 500 ? true : false;
-
-            // Record the sampling algorithm used
-            // Save additional data
-            data.choices = arr_pair;
-            data.sampleAlg = "random";
-        },
-    };
-  
-*/
-
 
 var trial = {
     type: jsPsychImageKeyboardResponse,
@@ -436,13 +370,39 @@ var trial = {
 
   // define the validation trials!
   var validation_trial = {
-        type: jsPsychImageKeyboardResponse, //html
+        type: jsPsychImageKeyboardResponse,
+        render_on_canvas: false,
+        stimulus_height: 150,
+        stimulus_width: 150, 
         stimulus: function () {
             row = validation_concat.pop();
             head = row.head;
             return head;
         },
         choices: ['ArrowLeft', 'ArrowRight'],  // Use arrow keys for choices
+        on_load: function() {
+            const stimulus = document.querySelector('#jspsych-image-keyboard-response-stimulus');
+            const choiceLeft = document.querySelector('#choice-left');
+            const choiceRight = document.querySelector('#choice-right');
+            
+            // Add timestamp to force reload and restart GIFs
+            const timestamp = new Date().getTime();
+            
+            if (stimulus) {
+                const stimSrc = stimulus.src.split('?')[0]; // Remove any existing query params
+                stimulus.src = stimSrc + '?' + timestamp;
+            }
+            
+            if (choiceLeft) {
+                const leftSrc = choiceLeft.src.split('?')[0];
+                choiceLeft.src = leftSrc + '?' + timestamp;
+            }
+            
+            if (choiceRight) {
+                const rightSrc = choiceRight.src.split('?')[0];
+                choiceRight.src = rightSrc + '?' + timestamp;
+            }
+        },
 
         on_start: function (trial) {
             arr_pair = [row.choice_1, row.choice_2];  // Get the two choices
@@ -465,18 +425,12 @@ var trial = {
             }
             // Determine which image was selected based on the key press
             if (data.response == 'ArrowLeft') {
-                console.log("ArrowLeft selected.");
                 data.selected_image = arr_pair[0];
                 data.selected_index = 0;  // ArrowLeft corresponds to the first choice
             } else if (data.response == 'ArrowRight') {
-                console.log("ArrowRight selected.");
                 data.selected_image = arr_pair[1];
                 data.selected_index = 1;  // ArrowLeft corresponds to the first choice
             }
-
-            // Save the choices to the data
-            //data.choices = arr_pair;
-            //console.log("Choices array:", arr_pair);
 
             // Record additional information such as response time and whether it was "speedy"
             var data_last = jsPsych.data.get().last(1);
@@ -492,9 +446,34 @@ var trial = {
     // Define the attention checks with keyboard responses
     var check_trial = {
         type: jsPsychImageKeyboardResponse,
+        render_on_canvas: false,
+        stimulus_height: 150,
+        stimulus_width: 150, 
         stimulus: jsPsych.timelineVariable('head'),  // Display the head image
         choices: ['ArrowLeft', 'ArrowRight'],  // Use arrow keys for choices
-
+        on_load: function() {
+            const stimulus = document.querySelector('#jspsych-image-keyboard-response-stimulus');
+            const choiceLeft = document.querySelector('#choice-left');
+            const choiceRight = document.querySelector('#choice-right');
+            
+            // Add timestamp to force reload and restart GIFs
+            const timestamp = new Date().getTime();
+            
+            if (stimulus) {
+                const stimSrc = stimulus.src.split('?')[0]; // Remove any existing query params
+                stimulus.src = stimSrc + '?' + timestamp;
+            }
+            
+            if (choiceLeft) {
+                const leftSrc = choiceLeft.src.split('?')[0];
+                choiceLeft.src = leftSrc + '?' + timestamp;
+            }
+            
+            if (choiceRight) {
+                const rightSrc = choiceRight.src.split('?')[0];
+                choiceRight.src = rightSrc + '?' + timestamp;
+            }
+        },
         on_start: function (trial) {
             arr_pair = [
                 jsPsych.timelineVariable('choice_1'),
